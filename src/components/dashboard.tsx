@@ -6,9 +6,10 @@ import { useState } from "react"
 
 interface DashboardProps {
     settings: AppSettings
+    isDemoMode?: boolean
 }
 
-export function Dashboard({ settings }: DashboardProps) {
+export function Dashboard({ settings, isDemoMode = false }: DashboardProps) {
     const [isGenerating, setIsGenerating] = useState(false)
     const [statusMessage, setStatusMessage] = useState("")
     const [result, setResult] = useState<{ docUrl: string, shortSummary: string } | null>(null)
@@ -28,7 +29,7 @@ export function Dashboard({ settings }: DashboardProps) {
             const response = await fetch('/api/generate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ settings })
+                body: JSON.stringify({ settings, isDemoMode })
             })
 
             const data = await response.json()

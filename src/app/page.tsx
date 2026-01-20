@@ -6,10 +6,12 @@ import { LoginView } from "@/components/login-view"
 import { OnboardingWizard } from "@/components/onboarding-wizard"
 import { Dashboard } from "@/components/dashboard"
 import { Loader2 } from "lucide-react"
+import { useState } from "react"
 
 export default function Home() {
   const { data: session, status } = useSession()
   const { settings, loading: settingsLoading, saveSettings } = useSettings()
+  const [isDemoMode, setIsDemoMode] = useState(false)
 
   if (status === "loading" || settingsLoading) {
     return (
@@ -19,13 +21,13 @@ export default function Home() {
     )
   }
 
-  if (!session) {
-    return <LoginView />
+  if (!session && !isDemoMode) {
+    return <LoginView onDemoStart={() => setIsDemoMode(true)} />
   }
 
   if (!settings) {
     return <OnboardingWizard onComplete={saveSettings} />
   }
 
-  return <Dashboard settings={settings} />
+  return <Dashboard settings={settings} isDemoMode={isDemoMode} />
 }

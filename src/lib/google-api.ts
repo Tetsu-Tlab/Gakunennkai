@@ -2,13 +2,26 @@ import { google } from 'googleapis'
 
 export class GoogleService {
     private auth: any;
+    private isMock: boolean;
 
-    constructor(accessToken: string) {
-        this.auth = new google.auth.OAuth2()
-        this.auth.setCredentials({ access_token: accessToken })
+    constructor(accessToken?: string) {
+        this.isMock = !accessToken;
+        if (!this.isMock) {
+            this.auth = new google.auth.OAuth2()
+            this.auth.setCredentials({ access_token: accessToken })
+        } else {
+            console.log("GoogleService initialized in MOCK mode")
+        }
     }
 
     async getCalendarEvents(calendarId: string, days: number = 14) {
+        if (this.isMock) {
+            return [
+                { start: { dateTime: '2026-02-03T10:00:00' }, summary: '学年集会' },
+                { start: { dateTime: '2026-02-05T15:00:00' }, summary: '進路希望調査締切' },
+                { start: { dateTime: '2026-02-10T09:00:00' }, summary: '漢字テスト一斉実施' }
+            ]
+        }
         const calendar = google.calendar({ version: 'v3', auth: this.auth })
         const now = new Date()
         const maxDate = new Date()
@@ -25,6 +38,10 @@ export class GoogleService {
     }
 
     async createDoc(folderId: string, title: string, content: string) {
+        if (this.isMock) {
+            console.log("MOCK: Created doc", title)
+            return "mock_doc_id_12345"
+        }
         const docs = google.docs({ version: 'v1', auth: this.auth })
         const drive = google.drive({ version: 'v3', auth: this.auth })
 
@@ -74,6 +91,10 @@ export class GoogleService {
     }
 
     async appendToSheet(spreadsheetId: string, values: string[]) {
+        if (this.isMock) {
+            console.log("MOCK: Appended to sheet", values)
+            return
+        }
         const sheets = google.sheets({ version: 'v4', auth: this.auth })
         await sheets.spreadsheets.values.append({
             spreadsheetId,
