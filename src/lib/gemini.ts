@@ -42,4 +42,39 @@ export class GeminiService {
         const result = await this.model.generateContent(prompt);
         return result.response.text().trim();
     }
+
+    async parseScheduleDocument(base64Data: string, mimeType: string) {
+        const prompt = `
+      この画像（またはPDF）は学校の年間行事予定表です。
+      ここから「日付（YYYY-MM-DD形式）」「行事名」「開始時刻（あれば）」「終了時刻（あれば）」を抽出し、
+      以下のJSON形式の配列で出力してください。
+      
+      情報は可能な限り全て抽出してください。
+      記述がない場合は、年は現在の年度（2025年または2026年）を文脈から推測してください。
+      
+      出力フォーマット:
+      [
+        { "date": "2024-04-10", "summary": "入学式", "startTime": "09:00", "endTime": "12:00" },
+        ...
+      ]
+      
+      Timeは不明な場合はnullにしてください。
+      JSONのみを出力し、Markdownのコードブロック記号は含めないでください。
+    `;
+
+        const result = await this.model.generateContent([
+            prompt,
+            {
+                inlineData: {
+                    data: base64Data,
+                    mimeType: mimeType
+                }
+            }
+        ]);
+
+        const text = result.response.text();
+        // Clean up potential markdown formatting
+        const jsonStr = text.replace(/```json\n?|\n?```/g, '').trim();
+        return JSON.parse(jsonStr);
+    }
 }

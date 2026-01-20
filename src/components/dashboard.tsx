@@ -54,6 +54,10 @@ export function Dashboard({ settings, isDemoMode = false }: DashboardProps) {
                 <div className="mx-auto flex max-w-5xl items-center justify-between">
                     <h1 className="text-xl font-semibold tracking-tight text-primary">学年会資料マネージャー</h1>
                     <nav className="flex gap-4">
+                        <a href="/import" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+                            <CalendarDays className="h-4 w-4" />
+                            予定表取込
+                        </a>
                         <button className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
                             <History className="h-4 w-4" />
                             過去の資料

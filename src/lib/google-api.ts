@@ -119,4 +119,40 @@ export class GoogleService {
         // Actually, let's just log it for now since scope might be missing.
         console.log("Posting to classroom not fully implemented due to scope check needed.")
     }
+    async insertEvents(calendarId: string, events: any[]) {
+        if (this.isMock) {
+            console.log("MOCK: Inserting events to calendarId", calendarId, events)
+            return events.length
+        }
+
+        const calendar = google.calendar({ version: 'v3', auth: this.auth })
+        let count = 0
+
+        for (const event of events) {
+            try {
+                // Construct resource
+                const resource: any = {
+                    summary: event.summary,
+                    start: event.startTime ? { dateTime: `${event.date}T${event.startTime}:00`, timeZone: 'Asia/Tokyo' } : { date: event.date },
+                    end: event.endTime
+                        ? { dateTime: `${event.date}T${event.endTime}:00`, timeZone: 'Asia/Tokyo' }
+                        : (event.startTime
+                            ? { dateTime: new Date(new Date(`${event.date}T${event.startTime}:00`).getTime() + 60 * 60 * 1000).toISOString().replace(/\.\d{3}Z$/, ''), timeZone: 'Asia/Tokyo' }
+                            : { date: event.date }
+                        )
+                }
+
+                await calendar.events.insert({
+                    calendarId,
+                    requestBody: resource
+                })
+                count++
+            } catch (e) {
+                console.error("Failed to insert event", event, e)
+            }
+            // Sleep slightly to avoid rate limits
+            await new Promise(r => setTimeout(r, 200))
+        }
+        return count
+    }
 }
