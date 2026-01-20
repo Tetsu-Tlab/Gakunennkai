@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+:root {
+  /* Minimalist "Zen" Palette */
+  /* White background, dark grey text for high contrast */
+  --background: #fdfdfd; 
+  --foreground: #1a1a1a;
+  
+  /* Primary Action Color: Deep Blue/Indigo (Profession, Calm) */
+  --primary: #2d3e50;
+  --primary-foreground: #ffffff;
+
+  /* Secondary: Soft Gray for cards/sections */
+  --secondary: #f3f4f6;
+  --secondary-foreground: #1f2937;
+
+  /* Accents */
+  --accent: #e5e7eb;
+  --accent-foreground: #111827;
+
+  /* Destructive */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  /* Borders */
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2d3e50;
+
+  /* Radius */
+  --radius: 0.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111111;
+    --foreground: #fafafa;
+    --primary: #3b82f6; /* Brighter blue for dark mode */
+    --primary-foreground: #ffffff;
+    --secondary: #1f1f1f;
+    --secondary-foreground: #fafafa;
+    --accent: #262626;
+    --accent-foreground: #fafafa;
+    --border: #262626;
+    --input: #262626;
+    --ring: #3b82f6;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
